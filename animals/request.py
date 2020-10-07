@@ -22,6 +22,17 @@ ANIMALS = [
   }
 ]
 
-
 def get_all_animals():
   return ANIMALS
+
+def get_single_animal(id):
+  requested_animal = None
+
+  # each animal variable here is a "dictionary" in Python, basically analogous to an "object" in JS
+  for animal in ANIMALS:
+
+    # you do 
+    if animal["id"] == id:
+      requested_animal = animal
+
+  return requested_animal
