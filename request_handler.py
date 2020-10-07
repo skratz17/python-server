@@ -46,14 +46,13 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     (resource, id) = self.parse_url(self.path)
 
+    # get dictionary of specific request handlers for this resource
     resource_handlers = HANDLERS[resource]
     
     if(id is not None):
-      resource_handler = resource_handlers["get_single"]
-      response = f"{resource_handler(id)}"
+      response = f"{resource_handlers['get_single'](id)}"
     else:
-      resource_handler = resource_handlers["get_all"]
-      response = f"{resource_handler()}"
+      response = f"{resource_handlers['get_all']()}"
 
     self.wfile.write(f"{response}".encode())
 
@@ -74,3 +73,6 @@ def main():
   host = ''
   port = 8088
   HTTPServer((host, port), HandleRequests).serve_forever()
+
+if __name__ == "__main__":
+  main()
