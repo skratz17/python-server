@@ -1,5 +1,17 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from animals import get_all_animals, get_single_animal
+from locations import get_all_locations, get_single_location
+
+HANDLERS = {
+    "animals": {
+        "get_all": get_all_animals,
+        "get_single": get_single_animal
+    },
+    "locations": {
+        "get_all": get_all_locations,
+        "get_single": get_single_location
+    }
+}
 
 # A class that inherits from another class
 class HandleRequests(BaseHTTPRequestHandler):
@@ -34,11 +46,14 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     (resource, id) = self.parse_url(self.path)
 
-    if resource == "animals":
-      if id is not None:
-        response = f"{get_single_animal(id)}"
-      else:
-        response = f"{get_all_animals()}"
+    resource_handlers = HANDLERS[resource]
+    
+    if(id is not None):
+      resource_handler = resource_handlers["get_single"]
+      response = f"{resource_handler(id)}"
+    else:
+      resource_handler = resource_handlers["get_all"]
+      response = f"{resource_handler()}"
 
     self.wfile.write(f"{response}".encode())
 
