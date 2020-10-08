@@ -1,4 +1,4 @@
-from helpers import get_next_id, remove_item_by_id
+from helpers import get_next_id, remove_item_by_id, replace_item_with_matching_id
 
 EMPLOYEES = [
     {
@@ -24,6 +24,9 @@ def create_employee(employee):
 
     EMPLOYEES.append(employee)
     return employee
+
+def update_employee(id, employee):
+    replace_item_with_matching_id(EMPLOYEES, id, employee)
 
 def delete_employee(id):
     remove_item_by_id(EMPLOYEES, id)

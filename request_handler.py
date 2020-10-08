@@ -1,12 +1,11 @@
-from animals.request import update_animal
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 from helpers import parse_url
-from animals import get_all_animals, get_single_animal, create_animal, delete_animal
-from locations import get_all_locations, get_single_location, create_location, delete_location
-from employees import get_all_employees, get_single_employee, create_employee, delete_employee
-from customers import get_all_customers, get_single_customer, delete_customer
+from animals import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal
+from locations import get_all_locations, get_single_location, create_location, delete_location, update_location
+from employees import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee
+from customers import get_all_customers, get_single_customer, delete_customer, update_customer
 
 HANDLERS = {
     "animals": {
@@ -20,18 +19,21 @@ HANDLERS = {
         "get_all": get_all_locations,
         "get_single": get_single_location,
         "create": create_location,
-        "delete": delete_location
+        "delete": delete_location,
+        "update": update_location
     },
     "employees": {
         "get_all": get_all_employees,
         "get_single": get_single_employee,
         "create": create_employee,
-        "delete": delete_employee
+        "delete": delete_employee,
+        "update": update_employee
     },
     "customers": {
         "get_all": get_all_customers,
         "get_single": get_single_customer,
-        "delete": delete_customer
+        "delete": delete_customer,
+        "update": update_customer
     }
 }
 
