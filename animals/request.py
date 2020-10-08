@@ -1,4 +1,4 @@
-from helpers import get_next_id, remove_item_by_id
+from helpers import get_next_id, remove_item_by_id, replace_item_with_matching_id
 
 ANIMALS = [
     {
@@ -6,21 +6,24 @@ ANIMALS = [
         "name": "Snickers",
         "species": "Dog",
         "locationId": 1,
-        "customerId": 4
+        "customerId": 4,
+        "status": "Admitted"
     },
     {
         "id": 2,
         "name": "Gypsy",
         "species": "Dog",
         "locationId": 1,
-        "customerId": 2
+        "customerId": 2,
+        "status": "Admitted"
     },
     {
         "id": 3,
         "name": "Blue",
         "species": "Cat",
         "locationId": 2,
-        "customerId": 1
+        "customerId": 1,
+        "status": "Admitted"
     }
 ]
 
@@ -42,6 +45,9 @@ def create_animal(animal):
 
     ANIMALS.append(animal)
     return animal
+
+def update_animal(id, new_animal):
+    replace_item_with_matching_id(ANIMALS, id, new_animal)
 
 def delete_animal(id):
     remove_item_by_id(ANIMALS, id)

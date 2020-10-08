@@ -2,34 +2,38 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 from helpers import parse_url
-from animals import get_all_animals, get_single_animal, create_animal, delete_animal
-from locations import get_all_locations, get_single_location, create_location, delete_location
-from employees import get_all_employees, get_single_employee, create_employee, delete_employee
-from customers import get_all_customers, get_single_customer, delete_customer
+from animals import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal
+from locations import get_all_locations, get_single_location, create_location, delete_location, update_location
+from employees import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee
+from customers import get_all_customers, get_single_customer, delete_customer, update_customer
 
 HANDLERS = {
     "animals": {
         "get_all": get_all_animals,
         "get_single": get_single_animal,
         "create": create_animal,
-        "delete": delete_animal
+        "delete": delete_animal,
+        "update": update_animal
     },
     "locations": {
         "get_all": get_all_locations,
         "get_single": get_single_location,
         "create": create_location,
-        "delete": delete_location
+        "delete": delete_location,
+        "update": update_location
     },
     "employees": {
         "get_all": get_all_employees,
         "get_single": get_single_employee,
         "create": create_employee,
-        "delete": delete_employee
+        "delete": delete_employee,
+        "update": update_employee
     },
     "customers": {
         "get_all": get_all_customers,
         "get_single": get_single_customer,
-        "delete": delete_customer
+        "delete": delete_customer,
+        "update": update_customer
     }
 }
 
@@ -42,6 +46,15 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
+
+    def __get_post_body(self):
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+
+        # JSON string -> Python dict
+        post_body = json.loads(post_body)
+
+        return post_body
 
   # A method on the class overriding parent method, handles GET requests
     def do_GET(self):
@@ -65,11 +78,8 @@ class HandleRequests(BaseHTTPRequestHandler):
   # Another overriding method that handles POST requests
     def do_POST(self):
         self._set_headers(201)
-        content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len)
-
-        # JSON string -> Python dict
-        post_body = json.loads(post_body)
+        
+        post_body = self.__get_post_body()
 
         (resource, id) = parse_url(self.path)
 
@@ -80,7 +90,16 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     # Yet another overriding method that handles PUT requests
     def do_PUT(self):
-        self.do_POST() # nailed it
+        self._set_headers(204) # 204 - No Content
+
+        post_body = self.__get_post_body()
+
+        (resource, id) = parse_url(self.path)
+
+        update_resource_handler = HANDLERS[resource]['update']
+        update_resource_handler(id, post_body)
+
+        self.wfile.write("".encode())
 
     def do_DELETE(self):
         self._set_headers(204) # 204 - No Content

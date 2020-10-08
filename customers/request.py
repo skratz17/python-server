@@ -1,4 +1,4 @@
-from helpers import remove_item_by_id
+from helpers import remove_item_by_id, replace_item_with_matching_id
 
 CUSTOMERS = [
     {
@@ -33,6 +33,9 @@ def get_single_customer(id):
             return customer
 
     return None
+
+def update_customer(id, customer):
+    replace_item_with_matching_id(CUSTOMERS, id, customer)
 
 def delete_customer(id):
     remove_item_by_id(CUSTOMERS, id)

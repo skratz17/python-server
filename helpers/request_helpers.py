@@ -15,6 +15,12 @@ def remove_item_by_id(LIST, id):
     if found_index >= 0:
         LIST.pop(found_index)
 
+def replace_item_with_matching_id(LIST, id, replacement):
+    for index, resource in enumerate(LIST):
+        if resource["id"] == id:
+            LIST[index] = replacement
+            break
+
 def parse_url(path):
     path_params = path.split("/")
     resource = path_params[1]
