@@ -1,3 +1,5 @@
+from helpers import get_next_id
+
 ANIMALS = [
     {
         "id": 1,
@@ -34,3 +36,9 @@ def get_single_animal(id):
             requested_animal = animal
 
     return requested_animal
+
+def create_animal(animal):
+    animal["id"] = get_next_id(ANIMALS)
+
+    ANIMALS.append(animal)
+    return animal

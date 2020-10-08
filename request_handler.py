@@ -1,5 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from animals import get_all_animals, get_single_animal
+import json
+
+from animals import get_all_animals, get_single_animal, create_animal
 from locations import get_all_locations, get_single_location
 from employees import get_all_employees, get_single_employee
 from customers import get_all_customers, get_single_customer
@@ -68,12 +70,21 @@ class HandleRequests(BaseHTTPRequestHandler):
 
   # Another overriding method that handles POST requests
     def do_POST(self):
-        self._set_headers(201) # 201 - CREATED
-
+        self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
-        response = f"received post request:<br>{post_body}"
-        self.wfile.write(response.encode())
+
+        # JSON string -> Python dict
+        post_body = json.loads(post_body)
+
+        (resource, id) = self.parse_url(self.path)
+
+        new_animal = None
+
+        if resource == "animals":
+            new_animal = create_animal(post_body)
+
+        self.wfile.write(f"{new_animal}".encode())
 
     # Yet another overriding method that handles PUT requests
     def do_PUT(self):
