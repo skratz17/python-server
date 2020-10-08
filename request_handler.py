@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 from helpers import parse_url
-from animals import get_all_animals, get_single_animal, create_animal
+from animals import get_all_animals, get_single_animal, create_animal, delete_animal
 from locations import get_all_locations, get_single_location, create_location
 from employees import get_all_employees, get_single_employee, create_employee
 from customers import get_all_customers, get_single_customer
@@ -11,7 +11,8 @@ HANDLERS = {
     "animals": {
         "get_all": get_all_animals,
         "get_single": get_single_animal,
-        "create": create_animal
+        "create": create_animal,
+        "delete": delete_animal
     },
     "locations": {
         "get_all": get_all_locations,
@@ -77,6 +78,16 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Yet another overriding method that handles PUT requests
     def do_PUT(self):
         self.do_POST() # nailed it
+
+    def do_DELETE(self):
+        self._set_headers(204) # 204 - No Content
+
+        (resource, id) = parse_url(self.path)
+
+        delete_resource_handler = HANDLERS[resource]['delete']
+        delete_resource_handler(id)
+
+        self.wfile.write("".encode())
 
 def main():
     host = ''
