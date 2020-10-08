@@ -1,4 +1,4 @@
-from helpers import get_next_id
+from helpers import get_next_id, remove_item_by_id
 
 ANIMALS = [
     {
@@ -42,3 +42,6 @@ def create_animal(animal):
 
     ANIMALS.append(animal)
     return animal
+
+def delete_animal(id):
+    remove_item_by_id(ANIMALS, id)

@@ -1,3 +1,5 @@
+from helpers import remove_item_by_id
+
 CUSTOMERS = [
     {
         "id": 1,
@@ -31,3 +33,6 @@ def get_single_customer(id):
             return customer
 
     return None
+
+def delete_customer(id):
+    remove_item_by_id(CUSTOMERS, id)

@@ -1,4 +1,4 @@
-from helpers import get_next_id
+from helpers import get_next_id, remove_item_by_id
 
 LOCATIONS = [
   {
@@ -28,3 +28,6 @@ def create_location(location):
 
     LOCATIONS.append(location)
     return location
+
+def delete_location(id):
+    remove_item_by_id(LOCATIONS, id)
