@@ -1,3 +1,5 @@
+from helpers import get_next_id
+
 EMPLOYEES = [
     {
         "name": "TEST CRAETION",
@@ -16,3 +18,9 @@ def get_single_employee(id):
             return employee
 
     return None
+
+def create_employee(employee):
+    employee["id"] = get_next_id(EMPLOYEES)
+
+    EMPLOYEES.append(employee)
+    return employee

@@ -1,3 +1,5 @@
+from helpers import get_next_id
+
 LOCATIONS = [
   {
     "id": 1,
@@ -20,3 +22,9 @@ def get_single_location(id):
             return location
     
     return None
+
+def create_location(location):
+    location["id"] = get_next_id(LOCATIONS)
+
+    LOCATIONS.append(location)
+    return location
