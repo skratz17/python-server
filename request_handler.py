@@ -1,3 +1,4 @@
+from animals.request import update_animal
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
@@ -12,7 +13,8 @@ HANDLERS = {
         "get_all": get_all_animals,
         "get_single": get_single_animal,
         "create": create_animal,
-        "delete": delete_animal
+        "delete": delete_animal,
+        "update": update_animal
     },
     "locations": {
         "get_all": get_all_locations,
@@ -43,6 +45,15 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
 
+    def __get_post_body(self):
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+
+        # JSON string -> Python dict
+        post_body = json.loads(post_body)
+
+        return post_body
+
   # A method on the class overriding parent method, handles GET requests
     def do_GET(self):
         print(self.path)
@@ -65,11 +76,8 @@ class HandleRequests(BaseHTTPRequestHandler):
   # Another overriding method that handles POST requests
     def do_POST(self):
         self._set_headers(201)
-        content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len)
-
-        # JSON string -> Python dict
-        post_body = json.loads(post_body)
+        
+        post_body = self.__get_post_body()
 
         (resource, id) = parse_url(self.path)
 
@@ -80,7 +88,16 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     # Yet another overriding method that handles PUT requests
     def do_PUT(self):
-        self.do_POST() # nailed it
+        self._set_headers(204) # 204 - No Content
+
+        post_body = self.__get_post_body()
+
+        (resource, id) = parse_url(self.path)
+
+        update_resource_handler = HANDLERS[resource]['update']
+        update_resource_handler(id, post_body)
+
+        self.wfile.write("".encode())
 
     def do_DELETE(self):
         self._set_headers(204) # 204 - No Content
