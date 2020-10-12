@@ -1,4 +1,8 @@
 class BasicHandler:
+    __VALID_QUERY_COLUMNS = {
+        "id": True
+    }
+
     def get_all(self):
         raise Exception('Not implemented')
 
