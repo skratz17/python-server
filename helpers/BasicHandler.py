@@ -32,3 +32,23 @@ class BasicHandler:
 
     def delete(self, id):
         self.__exec_query(lambda cursor: self._delete(cursor, id))
+
+    # derived classes need to implement the below functions if they want to 
+    # implement the corresponding functionality
+    def _get_all(self, cursor):
+        pass
+
+    def _get_by_id(self, cursor, id):
+        pass
+
+    def _get_by_criteria(self, cursor, key, value):
+        pass
+
+    def _create(self, cursor, obj):
+        pass
+
+    def _update(self, cursor, id, obj):
+        pass
+
+    def _delete(self, cursor, id):
+        pass
