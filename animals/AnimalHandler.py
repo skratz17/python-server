@@ -23,12 +23,7 @@ class AnimalHandler(BasicHandler):
 
             dataset = db_cursor.fetchall()
 
-            animals = [ 
-                Animal(
-                    a['id'], a['name'], a['breed'],
-                    a['location_id'], a['customer_id'], a['status']
-                ).__dict__ for a in dataset 
-            ]
+            animals = [ (Animal(**animal)).__dict__ for animal in dataset ]
 
         return json.dumps(animals)
 
@@ -51,7 +46,6 @@ class AnimalHandler(BasicHandler):
 
             data = db_cursor.fetchone()
 
-            animal =  Animal(data['id'], data['name'], data['breed'],
-                            data['location_id'], data['customer_id'], data['status'])
+            animal =  Animal(**data)
 
             return json.dumps(animal.__dict__)
