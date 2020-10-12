@@ -71,6 +71,39 @@ def get_single_customer(id):
 
         return json.dumps(customer.__dict__)
 
+def get_customer_by_criteria(key, value):
+    VALID_COLUMNS = { 
+        "id": True,
+        "name": True,
+        "address": True,
+        "email": True
+    }
+
+    if key in VALID_COLUMNS:
+        with sqlite3.connect("./kennel.db") as conn:
+            conn.row_factory = sqlite3.Row
+            db_cursor = conn.cursor()
+
+            db_cursor.execute(f"""
+            SELECT
+                c.id,
+                c.name,
+                c.address,
+                c.email,
+                c.password
+            FROM Customer c
+            WHERE c.{key} = ?
+            """, (value, ))
+
+            result = db_cursor.fetchone()
+
+            if(result is None):
+                return json.dumps(None)
+
+            else:
+                customer = Customer(**result)
+                return json.dumps(customer.__dict__)
+
 def update_customer(id, customer):
     replace_item_with_matching_id(CUSTOMERS, id, customer)
 
