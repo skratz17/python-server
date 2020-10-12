@@ -1,3 +1,7 @@
+import sqlite3
+import json
+
+from models import Customer
 from helpers import remove_item_by_id, replace_item_with_matching_id
 
 CUSTOMERS = [
@@ -25,14 +29,47 @@ CUSTOMERS = [
 ]
 
 def get_all_customers():
-    return CUSTOMERS
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        SELECT 
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        FROM Customer c
+        """)
+
+        dataset = db_cursor.fetchall()
+
+        customers = [ (Customer(**customer)).__dict__ for customer in dataset ]
+
+    return json.dumps(customers)
 
 def get_single_customer(id):
-    for customer in CUSTOMERS:
-        if(customer["id"] == id):
-            return customer
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-    return None
+        db_cursor.execute("""
+        SELECT
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        FROM Customer c
+        WHERE c.id = ?
+        """, ( id, ))
+
+        result = db_cursor.fetchone()
+
+        customer = Customer(**result)
+
+        return json.dumps(customer.__dict__)
 
 def update_customer(id, customer):
     replace_item_with_matching_id(CUSTOMERS, id, customer)
