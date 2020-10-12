@@ -1,8 +1,7 @@
 class Customer:
-    def __init__(self, name, address):
+    def __init__(self, id, name, address, email, password):
+        self.id = id
         self.name = name
         self.address = address
-
-if __name__ == '__main__':
-    c = Customer('Jacob Eckert', '123 Main Street')
-    print(c.name, c.address)
+        self.email = email
+        self.password = password
