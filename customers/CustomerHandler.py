@@ -72,11 +72,7 @@ class CustomerHandler(BasicHandler):
                 WHERE c.{key} = ?
                 """, (value, ))
 
-                result = db_cursor.fetchone()
+                results = db_cursor.fetchall()
 
-                if(result is None):
-                    return json.dumps(None)
-
-                else:
-                    customer = Customer(**result)
-                    return json.dumps(customer.__dict__)
+                customers = [ (Customer(**customer)).__dict__ for customer in results ]
+                return json.dumps(customers)
