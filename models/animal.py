@@ -1,12 +1,12 @@
 class Animal:
-    def __init__(self, id, name, breed, location_id, customer_id, status):
+    def __init__(self, id, name, species, locationId, customerId, status):
         self.id = id
         self.name = name
-        self.breed = breed
-        self.location_id = location_id
-        self.customer_id = customer_id
+        self.species = species
+        self.locationId = locationId
+        self.customerId = customerId
         self.status = status
 
 if __name__ == '__main__':
     a = Animal(1, 'Bo', 'Dawgg', 1, 2, 'Bein adorable')
-    print(a.id, a.name, a.breed, a.location_id, a.customer_id, a.status)
+    print(a.id, a.name, a.species, a.locationId, a.customerId, a.status)

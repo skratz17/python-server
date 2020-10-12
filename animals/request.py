@@ -24,7 +24,12 @@ def get_all_animals():
 
         dataset = db_cursor.fetchall()
 
-        animals = [ (Animal(**animal)).__dict__ for animal in dataset ]
+        animals = [ 
+            Animal(
+                a['id'], a['name'], a['breed'],
+                a['location_id'], a['customer_id'], a['status']
+            ).__dict__ for a in dataset 
+        ]
 
     return json.dumps(animals)
 
