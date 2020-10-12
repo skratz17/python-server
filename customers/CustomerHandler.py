@@ -15,8 +15,7 @@ class CustomerHandler(BasicHandler):
             c.id,
             c.name,
             c.address,
-            c.email,
-            c.password
+            c.email
         FROM Customer c
         """)
 
@@ -32,8 +31,7 @@ class CustomerHandler(BasicHandler):
             c.id,
             c.name,
             c.address,
-            c.email,
-            c.password
+            c.email
         FROM Customer c
         WHERE c.id = ?
         """, ( id, ))
@@ -51,8 +49,7 @@ class CustomerHandler(BasicHandler):
                 c.id,
                 c.name,
                 c.address,
-                c.email,
-                c.password
+                c.email
             FROM Customer c
             WHERE c.{key} = ?
             """, (value, ))
