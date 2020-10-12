@@ -49,3 +49,6 @@ class AnimalHandler(BasicHandler):
             animal =  Animal(**data)
 
             return json.dumps(animal.__dict__)
+
+    def get_by_criteria(self, key, value):
+        pass
