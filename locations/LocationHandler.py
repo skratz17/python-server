@@ -32,3 +32,9 @@ class LocationHandler(BasicHandler):
         location = Location(**result)
 
         return location.__dict__
+
+    def _delete(self, cursor, id):
+        cursor.execute("""
+        DELETE FROM Location
+        WHERE id = ?
+        """, ( id, ))

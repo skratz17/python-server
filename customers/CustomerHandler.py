@@ -58,3 +58,9 @@ class CustomerHandler(BasicHandler):
 
             customers = [ (Customer(**customer)).__dict__ for customer in results ]
             return customers
+
+    def _delete(self, cursor, id):
+        cursor.execute("""
+        DELETE FROM Customer
+        WHERE id = ?
+        """, ( id, ))

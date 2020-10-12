@@ -31,4 +31,4 @@ class BasicHandler:
         raise Exception('Not implemented')
 
     def delete(self, id):
-        raise Exception('Not implemented')
+        self.__exec_query(lambda cursor: self._delete(cursor, id))
