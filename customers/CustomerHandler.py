@@ -1,6 +1,3 @@
-import sqlite3
-import json
-
 from models import Customer
 from helpers import BasicHandler
 
@@ -12,33 +9,44 @@ class CustomerHandler(BasicHandler):
         "email": True
     }
 
-    def get_all(self):
-        with sqlite3.connect("./kennel.db") as conn:
-            conn.row_factory = sqlite3.Row
-            db_cursor = conn.cursor()
+    def _get_all(self, cursor):
+        cursor.execute("""
+        SELECT 
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        FROM Customer c
+        """)
 
-            db_cursor.execute("""
-            SELECT 
-                c.id,
-                c.name,
-                c.address,
-                c.email,
-                c.password
-            FROM Customer c
-            """)
+        dataset = cursor.fetchall()
 
-            dataset = db_cursor.fetchall()
+        customers = [ (Customer(**customer)).__dict__ for customer in dataset ]
 
-            customers = [ (Customer(**customer)).__dict__ for customer in dataset ]
+        return customers
 
-        return json.dumps(customers)
+    def _get_by_id(self, cursor, id):
+        cursor.execute("""
+        SELECT
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        FROM Customer c
+        WHERE c.id = ?
+        """, ( id, ))
 
-    def get_single(self, id):
-        with sqlite3.connect("./kennel.db") as conn:
-            conn.row_factory = sqlite3.Row
-            db_cursor = conn.cursor()
+        result = cursor.fetchone()
 
-            db_cursor.execute("""
+        customer = Customer(**result)
+
+        return customer.__dict__
+
+    def _get_by_criteria(self, cursor, key, value):
+        if key in self._VALID_QUERY_COLUMNS:
+            cursor.execute(f"""
             SELECT
                 c.id,
                 c.name,
@@ -46,33 +54,10 @@ class CustomerHandler(BasicHandler):
                 c.email,
                 c.password
             FROM Customer c
-            WHERE c.id = ?
-            """, ( id, ))
+            WHERE c.{key} = ?
+            """, (value, ))
 
-            result = db_cursor.fetchone()
+            results = cursor.fetchall()
 
-            customer = Customer(**result)
-
-            return json.dumps(customer.__dict__)
-
-    def get_by_criteria(self, key, value):
-        if key in self._VALID_QUERY_COLUMNS:
-            with sqlite3.connect("./kennel.db") as conn:
-                conn.row_factory = sqlite3.Row
-                db_cursor = conn.cursor()
-
-                db_cursor.execute(f"""
-                SELECT
-                    c.id,
-                    c.name,
-                    c.address,
-                    c.email,
-                    c.password
-                FROM Customer c
-                WHERE c.{key} = ?
-                """, (value, ))
-
-                results = db_cursor.fetchall()
-
-                customers = [ (Customer(**customer)).__dict__ for customer in results ]
-                return json.dumps(customers)
+            customers = [ (Customer(**customer)).__dict__ for customer in results ]
+            return customers

@@ -1,6 +1,3 @@
-import sqlite3
-import json
-
 from models import Employee
 from helpers import BasicHandler
 
@@ -12,65 +9,53 @@ class EmployeeHandler(BasicHandler):
         "location_id": True
     }
 
-    def get_all(self):
-        with sqlite3.connect("./kennel.db") as conn:
-            conn.row_factory = sqlite3.Row
-            db_cursor = conn.cursor()
+    def _get_all(self, cursor):
+        cursor.execute("""
+        SELECT 
+            e.id,
+            e.name,
+            e.address,
+            e.location_id
+        FROM Employee e
+        """)
 
-            db_cursor.execute("""
-            SELECT 
-                e.id,
-                e.name,
-                e.address,
-                e.location_id
-            FROM Employee e
-            """)
+        results = cursor.fetchall()
 
-            results = db_cursor.fetchall()
+        employees = [ (Employee(**employee)).__dict__ for employee in results ]
 
-            employees = [ (Employee(**employee)).__dict__ for employee in results ]
+        return employees
 
-        return json.dumps(employees)
+    def _get_by_id(self, cursor, id):
+        cursor.execute("""
+        SELECT
+            e.id,
+            e.name,
+            e.address,
+            e.location_id
+        FROM Employee e
+        WHERE e.id = ?
+        """, ( id, ))
 
-    def get_single(self, id):
-        with sqlite3.connect("./kennel.db") as conn:
-            conn.row_factory = sqlite3.Row
-            db_cursor = conn.cursor()
+        result = cursor.fetchone()
 
-            db_cursor.execute("""
+        employee = Employee(**result)
+
+        return employee.__dict__
+
+    def _get_by_criteria(self, cursor, key, value):
+        if key in self._VALID_QUERY_COLUMNS:
+            cursor.execute(f"""
             SELECT
                 e.id,
                 e.name,
                 e.address,
                 e.location_id
             FROM Employee e
-            WHERE e.id = ?
-            """, ( id, ))
+            WHERE e.{key} = ?
+            """, ( value, ))
 
-            result = db_cursor.fetchone()
+            results = cursor.fetchall()
 
-            employee = Employee(**result)
+            employees = [ (Employee(**employee)).__dict__ for employee in results ]
 
-            return json.dumps(employee.__dict__)
-
-    def get_by_criteria(self, key, value):
-        if key in self._VALID_QUERY_COLUMNS:
-            with sqlite3.connect("./kennel.db") as conn:
-                conn.row_factory = sqlite3.Row
-                db_cursor = conn.cursor()
-
-                db_cursor.execute(f"""
-                SELECT
-                    e.id,
-                    e.name,
-                    e.address,
-                    e.location_id
-                FROM Employee e
-                WHERE e.{key} = ?
-                """, ( value, ))
-
-                results = db_cursor.fetchall()
-
-                employees = [ (Employee(**employee)).__dict__ for employee in results ]
-
-                return json.dumps(employees)
+            return employees
