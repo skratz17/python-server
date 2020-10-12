@@ -1,1 +1,1 @@
-from .request import get_all_customers, get_single_customer, get_customer_by_criteria, delete_customer, update_customer
+from .CustomerHandler import CustomerHandler

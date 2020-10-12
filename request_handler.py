@@ -4,9 +4,9 @@ import urllib
 
 from helpers import BasicHandler
 from animals import AnimalHandler
-from locations import get_all_locations, get_single_location, create_location, delete_location, update_location
-from employees import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee
-from customers import get_all_customers, get_single_customer, get_customer_by_criteria, delete_customer, update_customer
+from customers import CustomerHandler
+from employees import EmployeeHandler
+from locations import LocationHandler
 
 class HandleRequests(BaseHTTPRequestHandler):
     def _set_headers(self, status):
@@ -55,6 +55,12 @@ class HandleRequests(BaseHTTPRequestHandler):
     def get_resource_handler(self, resource):
         if(resource == 'animals'):
             return AnimalHandler()
+        elif(resource == 'customers'):
+            return CustomerHandler()
+        elif(resource == 'employees'):
+            return EmployeeHandler()
+        elif(resource == 'locations'):
+            return LocationHandler()
 
         return BasicHandler()
 

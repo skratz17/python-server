@@ -1,1 +1,1 @@
-from .request import AnimalHandler
+from .AnimalHandler import AnimalHandler
