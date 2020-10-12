@@ -1,3 +1,7 @@
+import sqlite3
+import json
+
+from models import Employee
 from helpers import get_next_id, remove_item_by_id, replace_item_with_matching_id
 
 EMPLOYEES = [
@@ -10,7 +14,18 @@ EMPLOYEES = [
 ]
 
 def get_all_employees():
-    return EMPLOYEES
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        SELECT 
+            e.id,
+            e.name,
+            e.address,
+            e.location_id
+        FROM Employee e
+        """)
 
 def get_single_employee(id):
     for employee in EMPLOYEES:
