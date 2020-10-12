@@ -5,7 +5,7 @@ from helpers import parse_url
 from animals import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal
 from locations import get_all_locations, get_single_location, create_location, delete_location, update_location
 from employees import get_all_employees, get_single_employee, create_employee, delete_employee, update_employee
-from customers import get_all_customers, get_single_customer, delete_customer, update_customer
+from customers import get_all_customers, get_single_customer, get_customer_by_criteria, delete_customer, update_customer
 
 HANDLERS = {
     "animals": {
@@ -32,6 +32,7 @@ HANDLERS = {
     "customers": {
         "get_all": get_all_customers,
         "get_single": get_single_customer,
+        "get_by_criteria": get_customer_by_criteria,
         "delete": delete_customer,
         "update": update_customer
     }
@@ -63,15 +64,25 @@ class HandleRequests(BaseHTTPRequestHandler):
         self._set_headers(200)
         response = {} # default response
 
-        (resource, id) = parse_url(self.path)
+        url_parts = parse_url(self.path)
 
-        # get dictionary of specific request handlers for this resource
-        resource_handlers = HANDLERS[resource]
-        
-        if(id is not None):
-            response = f"{resource_handlers['get_single'](id)}"
-        else:
-            response = f"{resource_handlers['get_all']()}"
+        if len(url_parts) == 2:
+            resource, id = url_parts
+
+            # get dictionary of specific request handlers for this resource
+            resource_handlers = HANDLERS[resource]
+            
+            if(id is not None):
+                response = f"{resource_handlers['get_single'](id)}"
+            else:
+                response = f"{resource_handlers['get_all']()}"
+
+        elif len(url_parts) == 3:
+            resource, key, value = url_parts
+
+            resource_handlers = HANDLERS[resource]
+
+            response = resource_handlers['get_by_criteria'](key, value)
 
         self.wfile.write(f"{response}".encode())
 
