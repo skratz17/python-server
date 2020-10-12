@@ -44,7 +44,7 @@ class AnimalHandler(BasicHandler):
 
         data = cursor.fetchone()
 
-        animal =  Animal(**data)
+        animal = Animal(**data)
 
         return animal.__dict__
 
@@ -67,3 +67,9 @@ class AnimalHandler(BasicHandler):
             animals = [ (Animal(**animal)).__dict__ for animal in results ]
 
             return animals
+
+    def _delete(self, cursor, id):
+        cursor.execute("""
+        DELETE FROM animal
+        WHERE id = ?
+        """, ( id, ))

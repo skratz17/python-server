@@ -59,3 +59,9 @@ class EmployeeHandler(BasicHandler):
             employees = [ (Employee(**employee)).__dict__ for employee in results ]
 
             return employees
+
+    def _delete(self, cursor, id):
+        cursor.execute("""
+        DELETE FROM Employee
+        WHERE id = ?
+        """, ( id, ))
