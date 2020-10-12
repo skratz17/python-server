@@ -78,7 +78,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             resource_handler = self.get_resource_handler(resource)
             
             if(id is not None):
-                response = f"{resource_handler.get_single(id)}"
+                response = f"{resource_handler.get_by_id(id)}"
             else:
                 response = f"{resource_handler.get_all()}"
 

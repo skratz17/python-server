@@ -5,7 +5,7 @@ from models import Employee
 from helpers import BasicHandler
 
 class EmployeeHandler(BasicHandler):
-    __VALID_QUERY_COLUMNS = {
+    _VALID_QUERY_COLUMNS = {
         "id": True,
         "name": True,
         "address": True,
@@ -54,7 +54,7 @@ class EmployeeHandler(BasicHandler):
             return json.dumps(employee.__dict__)
 
     def get_by_criteria(self, key, value):
-        if key in self.__VALID_QUERY_COLUMNS:
+        if key in self._VALID_QUERY_COLUMNS:
             with sqlite3.connect("./kennel.db") as conn:
                 conn.row_factory = sqlite3.Row
                 db_cursor = conn.cursor()

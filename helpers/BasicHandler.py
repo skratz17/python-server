@@ -1,16 +1,28 @@
+import sqlite3
+import json
+
 class BasicHandler:
-    __VALID_QUERY_COLUMNS = {
+    _VALID_QUERY_COLUMNS = {
         "id": True
     }
 
+    def __exec_query(self, callback):
+        with sqlite3.connect("./kennel.db") as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            return callback(cursor)
+
     def get_all(self):
-        raise Exception('Not implemented')
+        result = self.__exec_query(lambda cursor: self._get_all(cursor))
+        return json.dumps(result)
 
     def get_by_id(self, id):
-        raise Exception('Not implemented')
+        result = self.__exec_query(lambda cursor: self._get_by_id(cursor, id))
+        return json.dumps(result)
 
     def get_by_criteria(self, key, value):
-        raise Exception('Not implemented')
+        result = self.__exec_query(lambda cursor: self._get_by_criteria(cursor, key, value))
+        return json.dumps(result)
 
     def create(self, obj):
         raise Exception('Not implemented')
