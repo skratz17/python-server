@@ -60,6 +60,22 @@ class CustomerHandler(BasicHandler):
             customers = [ (Customer(**customer)).__dict__ for customer in results ]
             return customers
 
+    def _update(self, cursor, id, customer):
+        cursor.execute("""
+        UPDATE Customer
+        SET
+            name = ?,
+            address = ?,
+            email = ?,
+            password = ?
+        WHERE id = ?
+        """, ( customer['name'], customer['address'], customer['email'],
+                customer['password'], id ))
+
+        rows_affected = cursor.rowcount
+
+        return rows_affected != 0
+
     def _delete(self, cursor, id):
         cursor.execute("""
         DELETE FROM Customer

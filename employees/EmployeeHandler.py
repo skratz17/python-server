@@ -60,6 +60,20 @@ class EmployeeHandler(BasicHandler):
 
             return employees
 
+    def _update(self, cursor, id, employee):
+        cursor.execute("""
+        UPDATE Employee
+        SET
+            name = ?,
+            address = ?,
+            location_id = ?
+        WHERE id = ?
+        """, ( employee['name'], employee['address'], employee['location_id'], id ))
+
+        rows_affected = cursor.rowcount
+
+        return rows_affected != 0
+
     def _delete(self, cursor, id):
         cursor.execute("""
         DELETE FROM Employee

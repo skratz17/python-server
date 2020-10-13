@@ -33,6 +33,19 @@ class LocationHandler(BasicHandler):
 
         return location.__dict__
 
+    def _update(self, cursor, id, location):
+        cursor.execute("""
+        UPDATE Location
+        SET
+            name = ?,
+            address = ?
+        WHERE id = ?
+        """, ( location['name'], location['address'], id ))
+
+        rows_affected = cursor.rowcount
+
+        return rows_affected != 0
+
     def _delete(self, cursor, id):
         cursor.execute("""
         DELETE FROM Location

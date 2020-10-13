@@ -28,7 +28,10 @@ class BasicHandler:
         raise Exception('Not implemented')
 
     def update(self, id, obj):
-        raise Exception('Not implemented')
+        result = self.__exec_query(lambda cursor: self._update(cursor, id, obj))
+        if(result == False):
+            return False
+        return json.dumps(result)
 
     def delete(self, id):
         self.__exec_query(lambda cursor: self._delete(cursor, id))

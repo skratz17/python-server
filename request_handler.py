@@ -106,14 +106,18 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     # Yet another overriding method that handles PUT requests
     def do_PUT(self):
-        self._set_headers(204) # 204 - No Content
-
         post_body = self.__get_post_body()
 
         (resource, id) = self.parse_url(self.path)
 
         resource_handler = self.get_resource_handler(resource)
-        resource_handler.update(id, post_body)
+        success = resource_handler.update(id, post_body)
+
+        # responding with 404 if resource not found in the update
+        if(success == False):
+            self._set_headers(404)
+        else:
+            self._set_headers(204) # 204 - No Content
 
         self.wfile.write("".encode())
 
