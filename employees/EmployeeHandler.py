@@ -100,7 +100,7 @@ class EmployeeHandler(BasicHandler):
         SET
             name = ?,
             address = ?,
-            location_id = ?
+            location_id = ?,
             animal_id = ?
         WHERE id = ?
         """, ( employee['name'], employee['address'], employee['location_id'], 
