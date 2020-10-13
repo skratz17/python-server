@@ -13,6 +13,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header('Content-type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, PUT, DELETE, GET')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
         self.end_headers()
 
     def __get_post_body(self):
@@ -129,6 +131,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         resource_handler = self.get_resource_handler(resource)
         resource_handler.delete(id)
 
+        self.wfile.write("".encode())
+
+    def do_OPTIONS(self):
+        self._set_headers(200)
         self.wfile.write("".encode())
 
 def main():
