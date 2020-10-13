@@ -111,6 +111,22 @@ class AnimalHandler(BasicHandler):
 
             return animals
 
+    def _create(self, cursor, animal):
+        cursor.execute("""
+        INSERT INTO Animal
+            ( name, breed, status, customer_id, location_id )
+        VALUES
+            ( ?, ?, ?, ?, ? )
+        """, ( animal['name'], animal['breed'], animal['status'],
+                animal['customer_id'], animal['location_id']))
+
+        # lastrowid property returns primary key of last thing added to DB
+        id = cursor.lastrowid
+
+        animal['id'] = id
+
+        return animal
+
     def _update(self, cursor, id, animal):
         cursor.execute("""
         UPDATE Animal

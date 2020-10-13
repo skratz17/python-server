@@ -25,7 +25,8 @@ class BasicHandler:
         return json.dumps(result)
 
     def create(self, obj):
-        raise Exception('Not implemented')
+        result = self.__exec_query(lambda cursor: self._create(cursor, obj))
+        return json.dumps(result)
 
     def update(self, id, obj):
         result = self.__exec_query(lambda cursor: self._update(cursor, id, obj))
