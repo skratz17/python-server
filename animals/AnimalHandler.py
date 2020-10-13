@@ -68,6 +68,23 @@ class AnimalHandler(BasicHandler):
 
             return animals
 
+    def _update(self, cursor, id, animal):
+        cursor.execute("""
+        UPDATE Animal
+        SET
+            name = ?,
+            breed = ?,
+            status = ?,
+            customer_id = ?,
+            location_id = ?
+        WHERE id = ?
+        """, ( animal['name'], animal['breed'], animal['status'], 
+                animal['customer_id'], animal['location_id'], id ))
+
+        rows_affected = cursor.rowcount
+
+        return rows_affected != 0
+
     def _delete(self, cursor, id):
         cursor.execute("""
         DELETE FROM animal
