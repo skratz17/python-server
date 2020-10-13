@@ -1,5 +1,5 @@
 from helpers import BasicHandler
-from models import Animal
+from models import Animal, Location, Customer
 
 class AnimalHandler(BasicHandler):
     _VALID_QUERY_COLUMNS = {
@@ -11,6 +11,22 @@ class AnimalHandler(BasicHandler):
         "location_id": True
     }
 
+    # given a row from a dataset that included a JOIN on location, return the fully expanded animal
+    # object with the location object embedded in the animal
+    def __build_expanded_animal_from_row(self, row):
+        animal = Animal(row['id'], row['name'], row['breed'],
+                    row['location_id'], row['customer_id'], row['status'])
+        
+        location = Location(row['location_id'], row['location_name'], row['location_address'])
+
+        customer = Customer(row['customer_id'], row['customer_name'], row['customer_address'],
+                    row['customer_email'])
+
+        animal.location = location.__dict__
+        animal.customer = customer.__dict__
+
+        return animal.__dict__
+
     def _get_all(self, cursor):
         cursor.execute("""
         SELECT
@@ -19,13 +35,22 @@ class AnimalHandler(BasicHandler):
             a.breed,
             a.status,
             a.customer_id,
-            a.location_id
+            a.location_id,
+            l.name location_name,
+            l.address location_address,
+            c.name customer_name,
+            c.address customer_address,
+            c.email customer_email
         FROM animal a
+        JOIN location l
+            ON l.id = a.location_id
+        JOIN customer c
+            ON c.id = a.customer_id
         """)
 
         dataset = cursor.fetchall()
 
-        animals = [ (Animal(**animal)).__dict__ for animal in dataset ]
+        animals = [ self.__build_expanded_animal_from_row(row) for row in dataset ]
 
         return animals
 
@@ -37,16 +62,25 @@ class AnimalHandler(BasicHandler):
             a.breed,
             a.status,
             a.customer_id,
-            a.location_id
+            a.location_id,
+            l.name location_name,
+            l.address location_address,
+            c.name customer_name,
+            c.address customer_address,
+            c.email customer_email
         FROM animal a
+        JOIN location l
+            ON l.id = a.location_id
+        JOIN customer c
+            ON c.id = a.customer_id
         WHERE a.id = ?
         """, ( id, ))
 
         data = cursor.fetchone()
 
-        animal = Animal(**data)
+        animal = self.__build_expanded_animal_from_row(data)
 
-        return animal.__dict__
+        return animal
 
     def _get_by_criteria(self, cursor, key, value):
         if key in self._VALID_QUERY_COLUMNS:
@@ -57,14 +91,23 @@ class AnimalHandler(BasicHandler):
                 a.breed,
                 a.status,
                 a.customer_id,
-                a.location_id
+                a.location_id,
+                l.name location_name,
+                l.address location_address,
+                c.name customer_name,
+                c.address customer_address,
+                c.email customer_email
             FROM animal a
+            JOIN location l
+                ON l.id = a.location_id
+            JOIN customer c
+                ON c.id = a.customer_id
             WHERE a.{key} = ?
             """, ( value, ))
 
             results = cursor.fetchall()
 
-            animals = [ (Animal(**animal)).__dict__ for animal in results ]
+            animals = [ self.__build_expanded_animal_from_row(row) for row in results ]
 
             return animals
 
