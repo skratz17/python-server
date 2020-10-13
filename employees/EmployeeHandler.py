@@ -1,5 +1,5 @@
-from models import Employee
 from helpers import BasicHandler
+from models import Employee, Location
 
 class EmployeeHandler(BasicHandler):
     _VALID_QUERY_COLUMNS = {
@@ -9,19 +9,32 @@ class EmployeeHandler(BasicHandler):
         "location_id": True
     }
 
+    def __build_expanded_employee_from_row(self, row):
+        employee = Employee(row['id'], row['name'], row['address'], row['location_id'])
+
+        location = Location(row['location_id'], row['location_name'], row['location_address'])
+
+        employee.location = location.__dict__
+
+        return employee.__dict__
+
     def _get_all(self, cursor):
         cursor.execute("""
         SELECT 
             e.id,
             e.name,
             e.address,
-            e.location_id
+            e.location_id,
+            l.name location_name,
+            l.address location_address
         FROM Employee e
+        JOIN Location l
+            ON l.id = e.location_id
         """)
 
         results = cursor.fetchall()
 
-        employees = [ (Employee(**employee)).__dict__ for employee in results ]
+        employees = [ self.__build_expanded_employee_from_row(row) for row in results ]
 
         return employees
 
@@ -31,16 +44,20 @@ class EmployeeHandler(BasicHandler):
             e.id,
             e.name,
             e.address,
-            e.location_id
+            e.location_id,
+            l.name location_name,
+            l.address location_address
         FROM Employee e
+        JOIN Location l
+            ON l.id = e.location_id
         WHERE e.id = ?
         """, ( id, ))
 
         result = cursor.fetchone()
 
-        employee = Employee(**result)
+        employee = self.__build_expanded_employee_from_row(result)
 
-        return employee.__dict__
+        return employee
 
     def _get_by_criteria(self, cursor, key, value):
         if key in self._VALID_QUERY_COLUMNS:
@@ -49,14 +66,18 @@ class EmployeeHandler(BasicHandler):
                 e.id,
                 e.name,
                 e.address,
-                e.location_id
+                e.location_id,
+                l.name location_name,
+                l.address location_address
             FROM Employee e
+            JOIN Location l
+                ON l.id = e.location_id
             WHERE e.{key} = ?
             """, ( value, ))
 
             results = cursor.fetchall()
 
-            employees = [ (Employee(**employee)).__dict__ for employee in results ]
+            employees = [ self.__build_expanded_employee_from_row(row) for row in results ]
 
             return employees
 
