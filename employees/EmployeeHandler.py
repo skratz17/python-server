@@ -1,20 +1,25 @@
 from helpers import BasicHandler
-from models import Employee, Location
+from models import Employee, Location, Animal
 
 class EmployeeHandler(BasicHandler):
     _VALID_QUERY_COLUMNS = {
         "id": True,
         "name": True,
         "address": True,
-        "location_id": True
+        "location_id": True,
+        "animal_id": True
     }
 
     def __build_expanded_employee_from_row(self, row):
-        employee = Employee(row['id'], row['name'], row['address'], row['location_id'])
+        employee = Employee(row['id'], row['name'], row['address'], row['location_id'], row['animal_id'])
 
         location = Location(row['location_id'], row['location_name'], row['location_address'])
 
+        animal = Animal(row['animal_id'], row['animal_name'], row['animal_breed'], 
+                    row['animal_location_id'], row['animal_customer_id'], row['animal_status'])
+
         employee.location = location.__dict__
+        employee.animal = animal.__dict__
 
         return employee.__dict__
 
@@ -25,11 +30,19 @@ class EmployeeHandler(BasicHandler):
             e.name,
             e.address,
             e.location_id,
+            e.animal_id,
             l.name location_name,
-            l.address location_address
+            l.address location_address,
+            a.name animal_name,
+            a.breed animal_breed,
+            a.status animal_status,
+            a.customer_id animal_customer_id,
+            a.location_id animal_location_id
         FROM Employee e
         JOIN Location l
             ON l.id = e.location_id
+        JOIN Animal a
+            ON a.id = e.animal_id
         """)
 
         results = cursor.fetchall()
@@ -46,11 +59,19 @@ class EmployeeHandler(BasicHandler):
                 e.name,
                 e.address,
                 e.location_id,
+                e.animal_id,
                 l.name location_name,
-                l.address location_address
+                l.address location_address,
+                a.name animal_name,
+                a.breed animal_breed,
+                a.status animal_status,
+                a.customer_id animal_customer_id,
+                a.location_id animal_location_id
             FROM Employee e
             JOIN Location l
                 ON l.id = e.location_id
+            JOIN Animal a
+                ON a.id = e.animal_id
             WHERE e.{key} = ?
             """, ( value, ))
 
@@ -63,10 +84,10 @@ class EmployeeHandler(BasicHandler):
     def _create(self, cursor, employee):
         cursor.execute("""
         INSERT INTO Employee
-            ( name, address, location_id )
+            ( name, address, location_id, animal_id )
         VALUES
-            ( ?, ?, ? )
-        """, ( employee['name'], employee['address'], employee['location_id'] ))
+            ( ?, ?, ?, ? )
+        """, ( employee['name'], employee['address'], employee['location_id'], employee['animal_id'] ))
 
         id = cursor.lastrowid
         employee['id'] = id
@@ -79,9 +100,11 @@ class EmployeeHandler(BasicHandler):
         SET
             name = ?,
             address = ?,
-            location_id = ?
+            location_id = ?,
+            animal_id = ?
         WHERE id = ?
-        """, ( employee['name'], employee['address'], employee['location_id'], id ))
+        """, ( employee['name'], employee['address'], employee['location_id'], 
+                employee['animal_id'], id ))
 
         rows_affected = cursor.rowcount
 
