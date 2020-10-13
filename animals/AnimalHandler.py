@@ -1,5 +1,5 @@
 from helpers import BasicHandler
-from models import Animal, Location
+from models import Animal, Location, Customer
 
 class AnimalHandler(BasicHandler):
     _VALID_QUERY_COLUMNS = {
@@ -19,7 +19,11 @@ class AnimalHandler(BasicHandler):
         
         location = Location(row['location_id'], row['location_name'], row['location_address'])
 
+        customer = Customer(row['customer_id'], row['customer_name'], row['customer_address'],
+                    row['customer_email'])
+
         animal.location = location.__dict__
+        animal.customer = customer.__dict__
 
         return animal.__dict__
 
@@ -33,10 +37,15 @@ class AnimalHandler(BasicHandler):
             a.customer_id,
             a.location_id,
             l.name location_name,
-            l.address location_address
+            l.address location_address,
+            c.name customer_name,
+            c.address customer_address,
+            c.email customer_email
         FROM animal a
         JOIN location l
             ON l.id = a.location_id
+        JOIN customer c
+            ON c.id = a.customer_id
         """)
 
         dataset = cursor.fetchall()
@@ -55,10 +64,15 @@ class AnimalHandler(BasicHandler):
             a.customer_id,
             a.location_id,
             l.name location_name,
-            l.address location_address
+            l.address location_address,
+            c.name customer_name,
+            c.address customer_address,
+            c.email customer_email
         FROM animal a
         JOIN location l
             ON l.id = a.location_id
+        JOIN customer c
+            ON c.id = a.customer_id
         WHERE a.id = ?
         """, ( id, ))
 
@@ -79,10 +93,15 @@ class AnimalHandler(BasicHandler):
                 a.customer_id,
                 a.location_id,
                 l.name location_name,
-                l.address location_address
+                l.address location_address,
+                c.name customer_name,
+                c.address customer_address,
+                c.email customer_email
             FROM animal a
             JOIN location l
                 ON l.id = a.location_id
+            JOIN customer c
+                ON c.id = a.customer_id
             WHERE a.{key} = ?
             """, ( value, ))
 
