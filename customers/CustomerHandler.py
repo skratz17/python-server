@@ -60,6 +60,19 @@ class CustomerHandler(BasicHandler):
             customers = [ (Customer(**customer)).__dict__ for customer in results ]
             return customers
 
+    def _create(self, cursor, customer):
+        cursor.execute("""
+        INSERT INTO Customer
+            ( name, address, email, password )
+        VALUES
+            ( ?, ?, ?, ? )
+        """, ( customer['name'], customer['address'], customer['email'], customer['password'] ))
+
+        id = cursor.lastrowid
+        customer['id'] = id
+
+        return customer
+
     def _update(self, cursor, id, customer):
         cursor.execute("""
         UPDATE Customer

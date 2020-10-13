@@ -81,6 +81,19 @@ class EmployeeHandler(BasicHandler):
 
             return employees
 
+    def _create(self, cursor, employee):
+        cursor.execute("""
+        INSERT INTO Employee
+            ( name, address, location_id )
+        VALUES
+            ( ?, ?, ? )
+        """, ( employee['name'], employee['address'], employee['location_id'] ))
+
+        id = cursor.lastrowid
+        employee['id'] = id
+
+        return employee
+
     def _update(self, cursor, id, employee):
         cursor.execute("""
         UPDATE Employee
