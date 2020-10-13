@@ -49,7 +49,8 @@ class CustomerHandler(BasicHandler):
                 c.id,
                 c.name,
                 c.address,
-                c.email
+                c.email,
+                c.password
             FROM Customer c
             WHERE c.{key} = ?
             """, (value, ))
