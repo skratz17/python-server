@@ -29,7 +29,9 @@ CREATE TABLE `Employee` (
 	`name`	TEXT NOT NULL,
 	`address`	TEXT NOT NULL,
 	`location_id` INTEGER NOT NULL,
-	FOREIGN KEY(`location_id`) REFERENCES `Location`(`id`)
+  `animal_id` INTEGER NOT NULL,
+	FOREIGN KEY(`location_id`) REFERENCES `Location`(`id`),
+  FOREIGN KEY(`animal_id`) REFERENCES `Animal`(`id`)
 
 );
 
@@ -37,11 +39,11 @@ INSERT INTO `Location` VALUES (null, 'Nashville North', "64 Washington Heights")
 INSERT INTO `Location` VALUES (null, 'Nashville South', "101 Penn Ave");
 
 
-INSERT INTO `Employee` VALUES (null, "Madi Peper", "35498 Madison Ave", 1);
-INSERT INTO `Employee` VALUES (null, "Kristen Norris", "100 Main St", 1);
-INSERT INTO `Employee` VALUES (null, "Meg Ducharme", "404 Unknown Ct", 2);
-INSERT INTO `Employee` VALUES (null, "Hannah Hall", "204 Empty Ave", 1);
-INSERT INTO `Employee` VALUES (null, "Leah Hoefling", "200 Success Way", 2);
+INSERT INTO `Employee` VALUES (null, "Madi Peper", "35498 Madison Ave", 1, 1);
+INSERT INTO `Employee` VALUES (null, "Kristen Norris", "100 Main St", 1, 2);
+INSERT INTO `Employee` VALUES (null, "Meg Ducharme", "404 Unknown Ct", 2, 3);
+INSERT INTO `Employee` VALUES (null, "Hannah Hall", "204 Empty Ave", 1, 4);
+INSERT INTO `Employee` VALUES (null, "Leah Hoefling", "200 Success Way", 2, 5);
 
 
 INSERT INTO `Customer` VALUES (null, "Mo Silvera", "201 Created St", "mo@silvera.com", "password");
