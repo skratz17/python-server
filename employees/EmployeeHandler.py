@@ -38,27 +38,6 @@ class EmployeeHandler(BasicHandler):
 
         return employees
 
-    def _get_by_id(self, cursor, id):
-        cursor.execute("""
-        SELECT
-            e.id,
-            e.name,
-            e.address,
-            e.location_id,
-            l.name location_name,
-            l.address location_address
-        FROM Employee e
-        JOIN Location l
-            ON l.id = e.location_id
-        WHERE e.id = ?
-        """, ( id, ))
-
-        result = cursor.fetchone()
-
-        employee = self.__build_expanded_employee_from_row(result)
-
-        return employee
-
     def _get_by_criteria(self, cursor, key, value):
         if key in self._VALID_QUERY_COLUMNS:
             cursor.execute(f"""
