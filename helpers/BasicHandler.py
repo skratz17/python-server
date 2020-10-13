@@ -17,7 +17,13 @@ class BasicHandler:
         return json.dumps(result)
 
     def get_by_id(self, id):
-        result = self.__exec_query(lambda cursor: self._get_by_id(cursor, id))
+        result = self.__exec_query(lambda cursor: self._get_by_criteria(cursor, 'id', id))
+
+        if(len(result)):
+            result = result.pop()
+        else:
+            result = None
+        
         return json.dumps(result)
 
     def get_by_criteria(self, key, value):
@@ -40,9 +46,6 @@ class BasicHandler:
     # derived classes need to implement the below functions if they want to 
     # implement the corresponding functionality
     def _get_all(self, cursor):
-        pass
-
-    def _get_by_id(self, cursor, id):
         pass
 
     def _get_by_criteria(self, cursor, key, value):

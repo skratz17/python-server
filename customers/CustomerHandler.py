@@ -25,23 +25,6 @@ class CustomerHandler(BasicHandler):
 
         return customers
 
-    def _get_by_id(self, cursor, id):
-        cursor.execute("""
-        SELECT
-            c.id,
-            c.name,
-            c.address,
-            c.email
-        FROM Customer c
-        WHERE c.id = ?
-        """, ( id, ))
-
-        result = cursor.fetchone()
-
-        customer = Customer(**result)
-
-        return customer.__dict__
-
     def _get_by_criteria(self, cursor, key, value):
         if key in self._VALID_QUERY_COLUMNS:
             cursor.execute(f"""

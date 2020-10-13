@@ -54,34 +54,6 @@ class AnimalHandler(BasicHandler):
 
         return animals
 
-    def _get_by_id(self, cursor, id):
-        cursor.execute("""
-        SELECT
-            a.id,
-            a.name,
-            a.breed,
-            a.status,
-            a.customer_id,
-            a.location_id,
-            l.name location_name,
-            l.address location_address,
-            c.name customer_name,
-            c.address customer_address,
-            c.email customer_email
-        FROM animal a
-        JOIN location l
-            ON l.id = a.location_id
-        JOIN customer c
-            ON c.id = a.customer_id
-        WHERE a.id = ?
-        """, ( id, ))
-
-        data = cursor.fetchone()
-
-        animal = self.__build_expanded_animal_from_row(data)
-
-        return animal
-
     def _get_by_criteria(self, cursor, key, value):
         if key in self._VALID_QUERY_COLUMNS:
             cursor.execute(f"""
