@@ -33,6 +33,19 @@ class LocationHandler(BasicHandler):
 
         return location.__dict__
 
+    def _create(self, cursor, location):
+        cursor.execute("""
+        INSERT INTO Location
+            ( name, address )
+        VALUES
+            ( ?, ? )
+        """, ( location['name'], location['address'] ))
+
+        id = cursor.lastrowid
+        location['id'] = id
+
+        return location
+
     def _update(self, cursor, id, location):
         cursor.execute("""
         UPDATE Location
