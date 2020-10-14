@@ -71,3 +71,5 @@ class LocationHandler(BasicHandler):
         DELETE FROM Location
         WHERE id = ?
         """, ( id, ))
+
+        return cursor.rowcount != 0

@@ -41,7 +41,8 @@ class BasicHandler:
         return json.dumps(result)
 
     def delete(self, id):
-        self.__exec_query(lambda cursor: self._delete(cursor, id))
+        success = self.__exec_query(lambda cursor: self._delete(cursor, id))
+        return success
 
     # derived classes need to implement the below functions if they want to 
     # implement the corresponding functionality
