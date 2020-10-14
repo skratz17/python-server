@@ -77,3 +77,5 @@ class CustomerHandler(BasicHandler):
         DELETE FROM Customer
         WHERE id = ?
         """, ( id, ))
+
+        return cursor.rowcount != 0

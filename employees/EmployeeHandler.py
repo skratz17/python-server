@@ -115,3 +115,5 @@ class EmployeeHandler(BasicHandler):
         DELETE FROM Employee
         WHERE id = ?
         """, ( id, ))
+
+        return cursor.rowcount != 0

@@ -121,3 +121,5 @@ class AnimalHandler(BasicHandler):
         DELETE FROM animal
         WHERE id = ?
         """, ( id, ))
+
+        return cursor.rowcount != 0
